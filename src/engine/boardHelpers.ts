@@ -1,8 +1,6 @@
-import { OffsetTile, Tile, BaseTile } from "./tile";
-import { GameConfig, Hex } from "./types";
-import { HexUtils } from "react-hexgrid";
-import { Corner } from "./corner";
-import { Edge } from "./edge";
+import { OffsetTile, Tile, BaseTile } from './tile';
+import { GameConfig, Hex } from './types';
+import { HexUtils } from 'react-hexgrid';
 
 export type Tiles = { [id: string]: BaseTile };
 
@@ -21,7 +19,7 @@ function initEmptyTiles(hexes: Hex[], boardRadius: number): Tiles {
       tiles[id] = new OffsetTile(id);
     } else {
       throw new Error(
-        "Unexpected hexagons outside the offset ring, got coord:" + id
+        'Unexpected hexagons outside the offset ring, got coord:' + id
       );
     }
   });
@@ -41,37 +39,4 @@ export function initTiles(
   }
 
   return tiles;
-}
-
-/**
- * Get tile corner, given its location (dir): N, NE, SE, etc...
- */
-export function getCorner(
-  tile: BaseTile,
-  dir: TileCornerDir,
-  tiles: Tiles
-): Corner {
-  const [q, r, s] = tile.tileId.split(",");
-  const l = CornerLocations[dir];
-  const tileId = [q + l[0], r + l[1], s + l[2]].join(",");
-  return tiles[tileId].getCorners()[l[3]];
-}
-
-/**
- * Get all corners of a given tile
- */
-export function getCorners(tile: BaseTile, tiles: Tiles): Corner[] {
-  const [q, r, s] = tile.tileId.split(",");
-  return CornerLocations.map((l) => {
-    const tileId = [q + l[0], r + l[1], s + l[2]].join(",");
-    return tiles[tileId].getCorners()[l[3]];
-  });
-}
-
-export function getEdge(tile: BaseTile, dir: TileEdgeDir, tiles: Tiles): Edge {
-  // TODO
-}
-
-export function getEdges(tile: BaseTile, tiles: Tiles): Edge[] {
-  // TODO
 }

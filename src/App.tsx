@@ -1,6 +1,6 @@
-import "./styles.css";
+import './styles.css';
 
-import { HexGrid, Layout, Hexagon, GridGenerator, Hex } from "react-hexgrid";
+import { HexGrid, Layout, Hexagon, GridGenerator, Hex } from 'react-hexgrid';
 export default function App() {
   const hexagons = GridGenerator.hexagon(3);
 
