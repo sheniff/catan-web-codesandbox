@@ -1,6 +1,8 @@
 import { OffsetTile, Tile, BaseTile } from "./tile";
 import { GameConfig, Hex } from "./types";
 import { HexUtils } from "react-hexgrid";
+import { Corner } from "./corner";
+import { Edge } from "./edge";
 
 export type Tiles = { [id: string]: BaseTile };
 
@@ -40,3 +42,11 @@ export function initTiles(
 
   return tiles;
 }
+
+export function getCorner(
+  tile: BaseTile,
+  dir: TileCornerDir,
+  tiles: Tiles
+): Corner {}
+
+export function getEdge(tile: BaseTile, dir: TileEdgeDir, tiles: Tiles): Edge {}
