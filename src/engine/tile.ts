@@ -80,7 +80,6 @@ const EdgeLocations: [number, number, number, TileEdge][] = [
 ];
 
 export abstract class BaseTile {
-  protected type: TileType;
   /* 
     Note to self: Each tile will store
     - 2 corners (N, S)
@@ -91,8 +90,7 @@ export abstract class BaseTile {
   protected corners: Corner[];
   protected edges: Edge[];
 
-  constructor(type: TileType) {
-    this.type = type;
+  constructor(public tileId: string, protected type: TileType) {
     this.corners = this.initCorners();
     this.edges = this.initEdges();
   }
@@ -123,8 +121,8 @@ export abstract class BaseTile {
  * offset corners and edges.
  */
 export class OffsetTile extends BaseTile {
-  constructor() {
-    super(TileType.OFFSET);
+  constructor(public tileId: string) {
+    super(tileId, TileType.OFFSET);
   }
 }
 
@@ -138,8 +136,8 @@ export class Tile extends BaseTile {
   // Following structure from
   // https://www.redblobgames.com/grids/parts/#hexagons
 
-  constructor() {
-    super(TileType.TILE);
+  constructor(public tileId: string) {
+    super(tileId, TileType.TILE);
     this.hasRobber = false;
   }
 

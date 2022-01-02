@@ -5,7 +5,7 @@ import { Corner } from "./corner";
 describe("BaseTile", () => {
   it("should initialize corners and edges for such tile", () => {
     // as BaseTile is abstract, I'll test it using OffsetTile for the base methods
-    const tile = new OffsetTile();
+    const tile = new OffsetTile("0,0,0");
 
     const edges = tile.getEdges();
     expect(edges).toHaveLength(3);
