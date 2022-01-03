@@ -3,6 +3,10 @@ import { Tiles } from './boardHelpers';
 import { Corner } from './corner';
 import { Edge } from './edge';
 
+export function getTileCoords(tile: BaseTile): number[] {
+  return tile.tileId.split(',').map(Number);
+}
+
 /**
  * Tile's corners, and where to find them.
  *
@@ -51,13 +55,13 @@ const CornerLocations: [number, number, number, TileCorner][] = [
  *
  * Same process as for corners.
  */
-enum TileEdge {
+export enum TileEdge {
   NE = 0,
   NW = 1,
   W = 2
 }
 
-enum TileEdgeDir {
+export enum TileEdgeDir {
   NE = 0,
   E,
   SE,
@@ -83,7 +87,7 @@ export function getCorner(
   dir: TileCornerDir,
   tiles: Tiles
 ): Corner {
-  const [q, r, s] = tile.tileId.split(',').map(Number);
+  const [q, r, s] = getTileCoords(tile);
   const [qd, rd, sd, dird] = CornerLocations[dir]; // d = delta
   const tileId = [q + qd, r + rd, s + sd].join(',');
   return tiles[tileId].getCorners()[dird];
@@ -93,7 +97,7 @@ export function getCorner(
  * Get all corners of a given tile
  */
 export function getCorners(tile: BaseTile, tiles: Tiles): Corner[] {
-  const [q, r, s] = tile.tileId.split(',').map(Number);
+  const [q, r, s] = getTileCoords(tile);
   return CornerLocations.map((l) => {
     const [qd, rd, sd, dird] = l;
     const tileId = [q + qd, r + rd, s + sd].join(',');
@@ -102,9 +106,17 @@ export function getCorners(tile: BaseTile, tiles: Tiles): Corner[] {
 }
 
 export function getEdge(tile: BaseTile, dir: TileEdgeDir, tiles: Tiles): Edge {
-  // TODO
+  const [q, r, s] = getTileCoords(tile);
+  const [qd, rd, sd, dird] = EdgeLocations[dir];
+  const tileId = [q + qd, r + rd, s + sd].join(',');
+  return tiles[tileId].getEdges()[dird];
 }
 
 export function getEdges(tile: BaseTile, tiles: Tiles): Edge[] {
-  // TODO
+  const [q, r, s] = getTileCoords(tile);
+  return EdgeLocations.map((l) => {
+    const [qd, rd, sd, dird] = l;
+    const tileId = [q + qd, r + rd, s + sd].join(',');
+    return tiles[tileId].getEdges()[dird];
+  });
 }

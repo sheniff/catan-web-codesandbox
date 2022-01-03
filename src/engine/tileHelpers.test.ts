@@ -3,7 +3,11 @@ import {
   getCorner,
   getCorners,
   TileCorner,
-  TileCornerDir
+  TileCornerDir,
+  TileEdgeDir,
+  getEdge,
+  getEdges,
+  TileEdge
 } from './tileHelpers';
 
 describe('getCorner', () => {
@@ -59,6 +63,64 @@ describe('getCorners', () => {
       expectSE,
       expectS,
       expectSW,
+      expectNW
+    ]);
+  });
+});
+
+describe('getEdge', () => {
+  it('should return the right edges for a tile, given a direction', () => {
+    const board = new Board(0);
+    const tiles = board.getTiles();
+    const tile = tiles['0,0,0'];
+
+    // Each edge has to match with the expected edge in the tile we get it from
+    const cornerNE = getEdge(tile, TileEdgeDir.NE, tiles);
+    const expectNE = tile.getEdges()[TileEdge.NE];
+    expect(cornerNE).toBe(expectNE);
+
+    const cornerE = getEdge(tile, TileEdgeDir.E, tiles);
+    const expectE = tiles['1,0,-1'].getEdges()[TileEdge.W];
+    expect(cornerE).toBe(expectE);
+
+    const cornerSE = getEdge(tile, TileEdgeDir.SE, tiles);
+    const expectSE = tiles['0,1,-1'].getEdges()[TileEdge.NW];
+    expect(cornerSE).toBe(expectSE);
+
+    const cornerSW = getEdge(tile, TileEdgeDir.SW, tiles);
+    const expectSW = tiles['-1,1,0'].getEdges()[TileEdge.NE];
+    expect(cornerSW).toBe(expectSW);
+
+    const cornerW = getEdge(tile, TileEdgeDir.W, tiles);
+    const expectW = tile.getEdges()[TileEdge.W];
+    expect(cornerW).toBe(expectW);
+
+    const cornerNW = getEdge(tile, TileEdgeDir.NW, tiles);
+    const expectNW = tile.getEdges()[TileEdge.NW];
+    expect(cornerNW).toBe(expectNW);
+  });
+});
+
+describe('getEdges', () => {
+  it('should return all the edges for a tile', () => {
+    const board = new Board(0);
+    const tiles = board.getTiles();
+    const tile = tiles['0,0,0'];
+
+    const edges = getEdges(tile, tiles);
+    const expectNE = tile.getEdges()[TileEdge.NE];
+    const expectE = tiles['1,0,-1'].getEdges()[TileEdge.W];
+    const expectSE = tiles['0,1,-1'].getEdges()[TileEdge.NW];
+    const expectSW = tiles['-1,1,0'].getEdges()[TileEdge.NE];
+    const expectW = tile.getEdges()[TileEdge.W];
+    const expectNW = tile.getEdges()[TileEdge.NW];
+
+    expect(edges).toStrictEqual([
+      expectNE,
+      expectE,
+      expectSE,
+      expectSW,
+      expectW,
       expectNW
     ]);
   });
