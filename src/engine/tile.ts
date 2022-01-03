@@ -23,7 +23,7 @@ export abstract class BaseTile {
     this.edges = this.initEdges();
   }
 
-  get tileType() {
+  getTileType() {
     return this.type;
   }
 
