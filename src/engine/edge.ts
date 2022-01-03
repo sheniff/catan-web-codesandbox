@@ -1,4 +1,4 @@
-import { Player } from "./player";
+import { Player } from './player';
 
 enum EdgeType {
   Road
@@ -23,4 +23,21 @@ export class Edge {
   }
 
   // TODO: Getters/setters/checkers
+  placeRoad(owner: Player) {
+    if (this.occupation?.owner !== owner) {
+      throw new Error(
+        'There is already a road in this edge, owned by ' +
+          this.occupation?.owner.getName()
+      );
+    }
+
+    this.occupation = {
+      owner,
+      type: EdgeType.Road
+    };
+  }
+
+  getOwner(): Player | null {
+    return this.occupation?.owner || null;
+  }
 }

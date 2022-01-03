@@ -2,6 +2,7 @@ import { BaseTile } from './tile';
 import { Tiles } from './boardHelpers';
 import { Corner } from './corner';
 import { Edge } from './edge';
+import { Player } from './player';
 
 export function getTileCoords(tile: BaseTile): number[] {
   return tile.tileId.split(',').map(Number);
@@ -119,4 +120,119 @@ export function getEdges(tile: BaseTile, tiles: Tiles): Edge[] {
     const tileId = [q + qd, r + rd, s + sd].join(',');
     return tiles[tileId].getEdges()[dird];
   });
+}
+
+/**
+ * Endpoints for each edge of a tile.
+ * Corners given for the same tile (i.e, use `getCorner()` helper
+ * to determine the final corner for the given direction).
+ * The pair of endpoints are always listed in clock-wise order.
+ * E.g, for TileEdgeDir.W -> [TileCornerDir.SW, TileCornerDir.NW]
+ */
+const edgeEndpoints = {
+  [TileEdgeDir.NE]: [TileCornerDir.N, TileCornerDir.NE],
+  [TileEdgeDir.E]: [TileCornerDir.NE, TileCornerDir.SE],
+  [TileEdgeDir.SE]: [TileCornerDir.SE, TileCornerDir.S],
+  [TileEdgeDir.SW]: [TileCornerDir.S, TileCornerDir.SW],
+  [TileEdgeDir.W]: [TileCornerDir.SW, TileCornerDir.NW],
+  [TileEdgeDir.NW]: [TileCornerDir.NW, TileCornerDir.N]
+};
+
+export function getEdgeEndpoints(
+  tile: BaseTile,
+  dir: TileEdgeDir,
+  tiles: Tiles
+): Corner[] {
+  return edgeEndpoints[dir].map((d) => getCorner(tile, d, tiles));
+}
+
+/**
+ * Corner protrudes are the edges that extends from a given corner.
+ */
+const cornerProtrudes: {
+  [id: number]: [number, number, number, TileEdgeDir][];
+} = {
+  [TileCornerDir.N]: [
+    [1, -1, 0, TileEdgeDir.W],
+    [0, 0, 0, TileEdgeDir.NE],
+    [0, 0, 0, TileEdgeDir.NW]
+  ],
+  [TileCornerDir.NE]: [
+    [1, -1, 0, TileEdgeDir.SE],
+    [0, 0, 0, TileEdgeDir.E],
+    [0, 0, 0, TileEdgeDir.NE]
+  ],
+  [TileCornerDir.SE]: [
+    [0, 0, 0, TileEdgeDir.E],
+    [0, 1, -1, TileEdgeDir.NE],
+    [0, 0, 0, TileEdgeDir.SE]
+  ],
+  [TileCornerDir.S]: [
+    [0, 0, 0, TileEdgeDir.SE],
+    [0, 1, -1, TileEdgeDir.W],
+    [0, 0, 0, TileEdgeDir.SW]
+  ],
+  [TileCornerDir.SW]: [
+    [0, 0, 0, TileEdgeDir.W],
+    [0, 0, 0, TileEdgeDir.SW],
+    [-1, 0, 1, TileEdgeDir.SE]
+  ],
+  [TileCornerDir.NW]: [
+    [0, 0, 0, TileEdgeDir.NW],
+    [0, 0, 0, TileEdgeDir.W],
+    [-1, 0, 1, TileEdgeDir.NE]
+  ]
+};
+
+export function getEdgeNeighbors(
+  tile: BaseTile,
+  dir: TileEdgeDir,
+  tiles: Tiles
+): Edge[] {
+  const mainEdge = getEdge(tile, dir, tiles);
+  const [q, r, s] = getTileCoords(tile);
+  const edges: Edge[] = [];
+
+  edgeEndpoints[dir].forEach((d) => {
+    cornerProtrudes[d].forEach((edgeLoc) => {
+      const [qd, rd, sd, dird] = edgeLoc;
+      const tileId = [q + qd, r + rd, s + sd].join(',');
+      const edge = tiles[tileId].getEdges()[dird];
+
+      if (edge !== mainEdge) {
+        edges.push(edge);
+      }
+    });
+  });
+
+  return edges;
+}
+
+/**
+ * Checks that rules apply to place a road for a given player, those are
+ * - a. One of (2) edge's corners is owned by given player (with settlement or city)
+ * - b. There's at least one neighboring edge owned by same player
+ */
+export function assertPlaceRoad(
+  tile: BaseTile,
+  dir: TileEdgeDir,
+  tiles: Tiles,
+  player: Player
+): void {
+  // Assert player's settlement/city in any endpoint
+  const [corner1, corner2] = getEdgeEndpoints(tile, dir, tiles);
+  if (corner1.getOwner() === player || corner2.getOwner() === player) {
+    return;
+  }
+
+  const neighbors = getEdgeNeighbors(tile, dir, tiles);
+  if (!!neighbors.filter((edge) => edge.getOwner() === player).length) {
+    return;
+  }
+
+  throw new Error(
+    `[Road Assert] Invalid road for user ${player.getName()} in tile ${
+      tile.tileId
+    } at edge ${dir}. It violates game rules.`
+  );
 }

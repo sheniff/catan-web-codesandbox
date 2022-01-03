@@ -1,4 +1,12 @@
+// WIP
 export class Player {
-  private color: string; // hex color?
-  // WIP
+  constructor(private name: string, private color: string) {}
+
+  getName(): string {
+    return this.name;
+  }
+
+  getColor(): string {
+    return this.color;
+  }
 }
