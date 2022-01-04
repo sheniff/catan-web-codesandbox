@@ -184,21 +184,38 @@ const cornerProtrudes: {
   ]
 };
 
+export function getCornerEdgesLoc(
+  tile: BaseTile,
+  dir: TileCornerDir
+): [string, TileEdgeDir][] {
+  const [q, r, s] = getTileCoords(tile);
+  return cornerProtrudes[dir].map((edgeLoc) => {
+    const [qd, rd, sd, dird] = edgeLoc;
+    const tileId = [q + qd, r + rd, s + sd].join(',');
+    return [tileId, dird];
+  });
+}
+
+export function getCornerEdges(
+  tile: BaseTile,
+  dir: TileCornerDir,
+  tiles: Tiles
+) {
+  return getCornerEdgesLoc(tile, dir).map(
+    ([tileId, dirInTile]) => tiles[tileId].getEdges()[dirInTile]
+  );
+}
+
 export function getEdgeNeighbors(
   tile: BaseTile,
   dir: TileEdgeDir,
   tiles: Tiles
 ): Edge[] {
   const mainEdge = getEdge(tile, dir, tiles);
-  const [q, r, s] = getTileCoords(tile);
   const edges: Edge[] = [];
 
   edgeEndpoints[dir].forEach((d) => {
-    cornerProtrudes[d].forEach((edgeLoc) => {
-      const [qd, rd, sd, dird] = edgeLoc;
-      const tileId = [q + qd, r + rd, s + sd].join(',');
-      const edge = tiles[tileId].getEdges()[dird];
-
+    getCornerEdges(tile, d, tiles).forEach((edge) => {
       if (edge !== mainEdge) {
         edges.push(edge);
       }
@@ -206,6 +223,25 @@ export function getEdgeNeighbors(
   });
 
   return edges;
+}
+
+// TODO
+export function getCornerNeighbors(
+  tile: BaseTile,
+  dir: TileCornerDir,
+  tiles: Tiles
+): Corner[] {
+  const mainCorner = getCorner(tile, dir, tiles);
+  let corners: Corner[] = [];
+
+  getCornerEdgesLoc(tile, dir).forEach(([tileId, dirInTile]) => {
+    corners = corners.concat(
+      getEdgeEndpoints(tiles[tileId], dirInTile, tiles).filter(
+        (corner) => corner !== mainCorner
+      )
+    );
+  });
+  return corners;
 }
 
 /**
@@ -225,6 +261,7 @@ export function assertPlaceRoad(
     return;
   }
 
+  // Assert player's road in any neighboring edge
   const neighbors = getEdgeNeighbors(tile, dir, tiles);
   if (!!neighbors.filter((edge) => edge.getOwner() === player).length) {
     return;
@@ -235,4 +272,36 @@ export function assertPlaceRoad(
       tile.tileId
     } at edge ${dir}. It violates game rules.`
   );
+}
+
+/**
+ * Check that Catan's rules apply to create a settlement:
+ * - 1. At least a player's road reaches the corner AND
+ * - 2. No settlement/city (disregard the player) is placed in a neighbor corner
+ */
+export function assertPlaceSettlement(
+  tile: BaseTile,
+  dir: TileCornerDir,
+  tiles: Tiles,
+  player: Player
+): void {
+  const playerRoads = getCornerEdges(tile, dir, tiles).filter(
+    (edge) => edge.getOwner() === player
+  );
+
+  if (playerRoads.length === 0) {
+    throw new Error(
+      '[Assert settlement] Unable to build. No player roads reach this corner.'
+    );
+  }
+
+  const neighborBuildings = getCornerNeighbors(tile, dir, tiles).filter(
+    (corner) => !!corner.getOwner()
+  );
+
+  if (neighborBuildings.length > 0) {
+    throw new Error(
+      '[Assert settlement] Unable to build. A neighbor corner has a building.'
+    );
+  }
 }

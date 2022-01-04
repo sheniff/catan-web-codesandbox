@@ -44,7 +44,7 @@ export class Board {
 
   placeSettlement(tileId: string, dir: TileCornerDir, player: Player) {
     const corner = getCorner(this.tiles[tileId], dir, this.tiles);
-    // assertPlaceSettlement(); TODO
+    assertPlaceSettlement(this.tiles[tileId], dir, this.tiles, player);
     corner.placeSettlement(player);
   }
 
@@ -56,7 +56,7 @@ export class Board {
 
   placeRoad(tileId: string, dir: TileEdgeDir, player: Player) {
     const edge = getEdge(this.tiles[tileId], dir, this.tiles);
-    assertPlaceRoad();
+    assertPlaceRoad(this.tiles[tileId], dir, this.tiles, player);
     edge.placeRoad(player);
   }
 }
