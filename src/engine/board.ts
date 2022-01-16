@@ -6,7 +6,9 @@ import {
   getEdge,
   TileCornerDir,
   TileEdgeDir,
-  assertPlaceRoad
+  assertPlaceRoad,
+  assertPlaceSettlement,
+  assertPlaceCity
 } from './tileHelpers';
 import { Hex, GameConfig } from './types';
 
@@ -42,21 +44,39 @@ export class Board {
     return this.tiles;
   }
 
-  placeSettlement(tileId: string, dir: TileCornerDir, player: Player) {
+  /**
+   *
+   * @param tileId
+   * @param dir
+   * @param player
+   * @param onGameStartup -> Bypass the need of a road reaching the corner during initial game startup
+   */
+  placeSettlement(
+    tileId: string,
+    dir: TileCornerDir,
+    player: Player,
+    onGameStartup = false
+  ) {
+    assertPlaceSettlement(
+      this.tiles[tileId],
+      dir,
+      this.tiles,
+      player,
+      onGameStartup
+    );
     const corner = getCorner(this.tiles[tileId], dir, this.tiles);
-    assertPlaceSettlement(this.tiles[tileId], dir, this.tiles, player);
     corner.placeSettlement(player);
   }
 
   placeCity(tileId: string, dir: TileCornerDir, player: Player) {
     const corner = getCorner(this.tiles[tileId], dir, this.tiles);
-    // assertPlaceCity(); TODO
+    assertPlaceCity(corner, player);
     corner.placeCity(player);
   }
 
   placeRoad(tileId: string, dir: TileEdgeDir, player: Player) {
-    const edge = getEdge(this.tiles[tileId], dir, this.tiles);
     assertPlaceRoad(this.tiles[tileId], dir, this.tiles, player);
+    const edge = getEdge(this.tiles[tileId], dir, this.tiles);
     edge.placeRoad(player);
   }
 }

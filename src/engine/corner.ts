@@ -37,4 +37,12 @@ export class Corner {
   getOwner(): Player | null {
     return this.occupation?.owner || null;
   }
+
+  hasSettlement(): boolean {
+    return this.occupation?.reward === Reward.Settlement;
+  }
+
+  hasCity(): boolean {
+    return this.occupation?.reward === Reward.City;
+  }
 }

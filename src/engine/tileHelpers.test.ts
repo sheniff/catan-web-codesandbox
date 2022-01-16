@@ -7,7 +7,9 @@ import {
   TileEdgeDir,
   getEdge,
   getEdges,
-  TileEdge
+  TileEdge,
+  getCornerEdges,
+  getEdgeEndpoints
 } from './tileHelpers';
 
 describe('getCorner', () => {
@@ -123,5 +125,77 @@ describe('getEdges', () => {
       expectW,
       expectNW
     ]);
+  });
+});
+
+describe('getCornerEdges', () => {
+  // If you get lost with the coords, use
+  // https://www.redblobgames.com/grids/hexagons/#coordinates-cube
+  it('should return the edges for any given corner', () => {
+    const board = new Board(0);
+    const tiles = board.getTiles();
+    const tile = tiles['0,0,0'];
+
+    let edges = getCornerEdges(tile, TileCornerDir.N, tiles);
+    expect(edges[0]).toBe(tiles['1,-1,0'].getEdges()[TileEdge.W]);
+    expect(edges[1]).toBe(tiles['0,0,0'].getEdges()[TileEdge.NE]);
+    expect(edges[2]).toBe(tiles['0,0,0'].getEdges()[TileEdge.NW]);
+
+    edges = getCornerEdges(tile, TileCornerDir.NE, tiles);
+    expect(edges[0]).toBe(tiles['1,0,-1'].getEdges()[TileEdge.NW]);
+    expect(edges[1]).toBe(tiles['1,0,-1'].getEdges()[TileEdge.W]);
+    expect(edges[2]).toBe(tiles['0,0,0'].getEdges()[TileEdge.NE]);
+
+    edges = getCornerEdges(tile, TileCornerDir.SE, tiles);
+    expect(edges[0]).toBe(tiles['1,0,-1'].getEdges()[TileEdge.W]);
+    expect(edges[1]).toBe(tiles['0,1,-1'].getEdges()[TileEdge.NE]);
+    expect(edges[2]).toBe(tiles['0,1,-1'].getEdges()[TileEdge.NW]);
+
+    edges = getCornerEdges(tile, TileCornerDir.S, tiles);
+    expect(edges[0]).toBe(tiles['0,1,-1'].getEdges()[TileEdge.NW]);
+    expect(edges[1]).toBe(tiles['0,1,-1'].getEdges()[TileEdge.W]);
+    expect(edges[2]).toBe(tiles['-1,1,0'].getEdges()[TileEdge.NE]);
+
+    edges = getCornerEdges(tile, TileCornerDir.SW, tiles);
+    expect(edges[0]).toBe(tiles['0,0,0'].getEdges()[TileEdge.W]);
+    expect(edges[1]).toBe(tiles['-1,1,0'].getEdges()[TileEdge.NE]);
+    expect(edges[2]).toBe(tiles['-1,1,0'].getEdges()[TileEdge.NW]);
+
+    edges = getCornerEdges(tile, TileCornerDir.NW, tiles);
+    expect(edges[0]).toBe(tiles['0,0,0'].getEdges()[TileEdge.NW]);
+    expect(edges[1]).toBe(tiles['0,0,0'].getEdges()[TileEdge.W]);
+    expect(edges[2]).toBe(tiles['-1,0,1'].getEdges()[TileEdge.NE]);
+  });
+});
+
+describe('getEdgeEndpoints', () => {
+  it('should return the corners for any given edge', () => {
+    const board = new Board(0);
+    const tiles = board.getTiles();
+    const tile = tiles['0,0,0'];
+
+    let corners = getEdgeEndpoints(tile, TileEdgeDir.NE, tiles);
+    expect(corners[0]).toBe(tiles['0,0,0'].getCorners()[TileCorner.N]);
+    expect(corners[1]).toBe(tiles['1,-1,0'].getCorners()[TileCorner.S]);
+
+    corners = getEdgeEndpoints(tile, TileEdgeDir.E, tiles);
+    expect(corners[0]).toBe(tiles['1,-1,0'].getCorners()[TileCorner.S]);
+    expect(corners[1]).toBe(tiles['0,1,-1'].getCorners()[TileCorner.N]);
+
+    corners = getEdgeEndpoints(tile, TileEdgeDir.SE, tiles);
+    expect(corners[0]).toBe(tiles['0,1,-1'].getCorners()[TileCorner.N]);
+    expect(corners[1]).toBe(tiles['0,0,0'].getCorners()[TileCorner.S]);
+
+    corners = getEdgeEndpoints(tile, TileEdgeDir.SW, tiles);
+    expect(corners[0]).toBe(tiles['0,0,0'].getCorners()[TileCorner.S]);
+    expect(corners[1]).toBe(tiles['-1,1,0'].getCorners()[TileCorner.N]);
+
+    corners = getEdgeEndpoints(tile, TileEdgeDir.W, tiles);
+    expect(corners[0]).toBe(tiles['-1,1,0'].getCorners()[TileCorner.N]);
+    expect(corners[1]).toBe(tiles['0,-1,1'].getCorners()[TileCorner.S]);
+
+    corners = getEdgeEndpoints(tile, TileEdgeDir.NW, tiles);
+    expect(corners[0]).toBe(tiles['0,-1,1'].getCorners()[TileCorner.S]);
+    expect(corners[1]).toBe(tiles['0,0,0'].getCorners()[TileCorner.N]);
   });
 });

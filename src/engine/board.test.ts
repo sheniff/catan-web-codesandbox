@@ -1,5 +1,7 @@
 import { Board } from './board';
+import { Player } from './player';
 import { TileType } from './tile';
+import { TileCornerDir } from './tileHelpers';
 
 describe('board', () => {
   it('should initialize hexagons with offset', () => {
@@ -19,5 +21,15 @@ describe('board', () => {
     expect(tiles['0,1,-1'].getTileType()).toEqual(TileType.OFFSET);
     expect(tiles['1,-1,0'].getTileType()).toEqual(TileType.OFFSET);
     expect(tiles['1,0,-1'].getTileType()).toEqual(TileType.OFFSET);
+  });
+});
+
+describe('placeSettlement', () => {
+  it('should work if all conditions are met', () => {
+    const board = new Board(0);
+    const tiles = board.getTiles();
+    const player = new Player('tester', 'red');
+    // prepare a settlement and 2 roads -> valid structure
+    board.placeSettlement('0,0,0', TileCornerDir.N, player, true);
   });
 });

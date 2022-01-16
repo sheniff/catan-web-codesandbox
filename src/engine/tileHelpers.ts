@@ -184,6 +184,16 @@ const cornerProtrudes: {
   ]
 };
 
+/**
+ * Returns the location of the neighbor edges for a given corner.
+ *
+ * Note: This returns a [tileId, dird] for each result, where dird is
+ * a TileEdgeDir (aka, any direction in the tile), NOT the TileEdge (aka,
+ * the directions of the edges that such tile HOLDS).
+ *
+ * If you want to get the final edge, use `getEdge(tiles[tileId], dird, tiles)`
+ * see getCornerEdges below as an example.
+ */
 export function getCornerEdgesLoc(
   tile: BaseTile,
   dir: TileCornerDir
@@ -201,8 +211,8 @@ export function getCornerEdges(
   dir: TileCornerDir,
   tiles: Tiles
 ) {
-  return getCornerEdgesLoc(tile, dir).map(
-    ([tileId, dirInTile]) => tiles[tileId].getEdges()[dirInTile]
+  return getCornerEdgesLoc(tile, dir).map(([tileId, dirInTile]) =>
+    getEdge(tiles[tileId], dirInTile, tiles)
   );
 }
 
@@ -278,18 +288,21 @@ export function assertPlaceRoad(
  * Check that Catan's rules apply to create a settlement:
  * - 1. At least a player's road reaches the corner AND
  * - 2. No settlement/city (disregard the player) is placed in a neighbor corner
+ *
+ * TODO: For starting settlement placement, we should bypass condition #1
  */
 export function assertPlaceSettlement(
   tile: BaseTile,
   dir: TileCornerDir,
   tiles: Tiles,
-  player: Player
+  player: Player,
+  bypassAssertForGameStartup = false
 ): void {
   const playerRoads = getCornerEdges(tile, dir, tiles).filter(
     (edge) => edge.getOwner() === player
   );
 
-  if (playerRoads.length === 0) {
+  if (playerRoads.length === 0 && !bypassAssertForGameStartup) {
     throw new Error(
       '[Assert settlement] Unable to build. No player roads reach this corner.'
     );
@@ -303,5 +316,18 @@ export function assertPlaceSettlement(
     throw new Error(
       '[Assert settlement] Unable to build. A neighbor corner has a building.'
     );
+  }
+}
+
+export function assertPlaceCity(corner: Corner, player: Player) {
+  const owner = corner.getOwner();
+  if (!owner || owner !== player) {
+    throw new Error(
+      '[Assert city] Unable to build. Corner belongs to another user or no settlement found.'
+    );
+  }
+
+  if (!corner.hasSettlement()) {
+    throw new Error('[Assert city] There is already a city in this place');
   }
 }
