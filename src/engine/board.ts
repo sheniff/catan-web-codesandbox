@@ -65,13 +65,17 @@ export class Board {
       onGameStartup
     );
     const corner = getCorner(this.tiles[tileId], dir, this.tiles);
-    corner.placeSettlement(player);
+    if (corner) {
+      corner.placeSettlement(player);
+    }
   }
 
   placeCity(tileId: string, dir: TileCornerDir, player: Player) {
     const corner = getCorner(this.tiles[tileId], dir, this.tiles);
-    assertPlaceCity(corner, player);
-    corner.placeCity(player);
+    if (corner) {
+      assertPlaceCity(corner, player);
+      corner.placeCity(player);
+    }
   }
 
   placeRoad(tileId: string, dir: TileEdgeDir, player: Player) {

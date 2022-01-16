@@ -87,11 +87,11 @@ export function getCorner(
   tile: BaseTile,
   dir: TileCornerDir,
   tiles: Tiles
-): Corner {
+): Corner | undefined {
   const [q, r, s] = getTileCoords(tile);
   const [qd, rd, sd, dird] = CornerLocations[dir]; // d = delta
   const tileId = [q + qd, r + rd, s + sd].join(',');
-  return tiles[tileId].getCorners()[dird];
+  return tiles[tileId]?.getCorners()[dird];
 }
 
 /**
@@ -142,7 +142,7 @@ export function getEdgeEndpoints(
   tile: BaseTile,
   dir: TileEdgeDir,
   tiles: Tiles
-): Corner[] {
+): (Corner | undefined)[] {
   return edgeEndpoints[dir].map((d) => getCorner(tile, d, tiles));
 }
 
@@ -216,6 +216,12 @@ export function getCornerEdges(
   );
 }
 
+/**
+ * Return all the edges that are neighbors of a given one.
+ * The order of the edges are:
+ * - Pick each edge's corner in clockwise order
+ * - On each edge, return each edge (except for the given one) in clockwise order
+ */
 export function getEdgeNeighbors(
   tile: BaseTile,
   dir: TileEdgeDir,
@@ -240,9 +246,9 @@ export function getCornerNeighbors(
   tile: BaseTile,
   dir: TileCornerDir,
   tiles: Tiles
-): Corner[] {
+): (Corner | undefined)[] {
   const mainCorner = getCorner(tile, dir, tiles);
-  let corners: Corner[] = [];
+  let corners: (Corner | undefined)[] = [];
 
   getCornerEdgesLoc(tile, dir).forEach(([tileId, dirInTile]) => {
     corners = corners.concat(
@@ -267,7 +273,7 @@ export function assertPlaceRoad(
 ): void {
   // Assert player's settlement/city in any endpoint
   const [corner1, corner2] = getEdgeEndpoints(tile, dir, tiles);
-  if (corner1.getOwner() === player || corner2.getOwner() === player) {
+  if (corner1?.getOwner() === player || corner2?.getOwner() === player) {
     return;
   }
 
@@ -309,7 +315,7 @@ export function assertPlaceSettlement(
   }
 
   const neighborBuildings = getCornerNeighbors(tile, dir, tiles).filter(
-    (corner) => !!corner.getOwner()
+    (corner) => !!corner?.getOwner()
   );
 
   if (neighborBuildings.length > 0) {

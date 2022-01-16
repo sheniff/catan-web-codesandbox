@@ -24,7 +24,7 @@ export class Edge {
 
   // TODO: Getters/setters/checkers
   placeRoad(owner: Player) {
-    if (this.occupation?.owner !== owner) {
+    if (this.occupation && this.occupation.owner !== owner) {
       throw new Error(
         'There is already a road in this edge, owned by ' +
           this.occupation?.owner.getName()

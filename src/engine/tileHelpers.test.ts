@@ -9,7 +9,9 @@ import {
   getEdges,
   TileEdge,
   getCornerEdges,
-  getEdgeEndpoints
+  getEdgeEndpoints,
+  getEdgeNeighbors,
+  getCornerNeighbors
 } from './tileHelpers';
 
 describe('getCorner', () => {
@@ -197,5 +199,52 @@ describe('getEdgeEndpoints', () => {
     corners = getEdgeEndpoints(tile, TileEdgeDir.NW, tiles);
     expect(corners[0]).toBe(tiles['0,-1,1'].getCorners()[TileCorner.S]);
     expect(corners[1]).toBe(tiles['0,0,0'].getCorners()[TileCorner.N]);
+  });
+});
+
+describe('getEdgeNeighbors', () => {
+  it('should return all the neighboring edges for a given one', () => {
+    const board = new Board(0);
+    const tiles = board.getTiles();
+    const tile = tiles['0,0,0'];
+
+    let neighbors = getEdgeNeighbors(tile, TileEdgeDir.NE, tiles);
+    expect(neighbors[0]).toBe(tiles['1,-1,0'].getEdges()[TileEdge.W]);
+    expect(neighbors[1]).toBe(tiles['0,0,0'].getEdges()[TileEdge.NW]);
+    expect(neighbors[2]).toBe(tiles['1,0,-1'].getEdges()[TileEdge.NW]);
+    expect(neighbors[3]).toBe(tiles['1,0,-1'].getEdges()[TileEdge.W]);
+    // TODO: add the rest of cases... someday. </lazy>
+  });
+});
+
+describe('getCornerNeighbors', () => {
+  it('should return all the neighboring corners for a given one', () => {
+    const board = new Board(1);
+    const tiles = board.getTiles();
+    const tile = tiles['0,0,0'];
+
+    let neighbors = getCornerNeighbors(tile, TileCornerDir.N, tiles);
+
+    expect(neighbors[0]).toBe(
+      getCorner(tiles['1,-1,0'], TileCornerDir.NW, tiles)
+    );
+    expect(neighbors[1]).toBe(getCorner(tile, TileCornerDir.NE, tiles));
+    expect(neighbors[2]).toBe(getCorner(tile, TileCornerDir.NW, tiles));
+  });
+
+  it('should allow to return undefined for neighbors outside the board', () => {
+    const board = new Board(0);
+    const tiles = board.getTiles();
+    const tile = tiles['0,0,0'];
+
+    let neighbors = getCornerNeighbors(tile, TileCornerDir.N, tiles);
+    expect(neighbors[0]).toBeUndefined(); // That neighbor does not exist
+    expect(neighbors[1]).toBe(getCorner(tile, TileCornerDir.NE, tiles));
+    expect(neighbors[2]).toBe(getCorner(tile, TileCornerDir.NW, tiles));
+
+    neighbors = getCornerNeighbors(tile, TileCornerDir.S, tiles);
+    expect(neighbors[0]).toBe(getCorner(tile, TileCornerDir.SE, tiles));
+    expect(neighbors[1]).toBeUndefined(); // That neighbor does not exist
+    expect(neighbors[2]).toBe(getCorner(tile, TileCornerDir.SW, tiles));
   });
 });
