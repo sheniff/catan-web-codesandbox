@@ -1,6 +1,7 @@
 import { Hexagon, HexUtils } from 'react-hexgrid';
 import { Tile } from '../engine/tile';
 import { Hex, Resource } from '../engine/types';
+import { TileDebugLayer } from './TileDebugLayer';
 
 interface Props {
   hex: Hex;
@@ -34,16 +35,7 @@ export function CatanTile({ hex, tile }: Props) {
       s={hex.s}
       cellStyle={{ fill: getTileColor(tile) }}
     >
-      {/* Add things here */}
-      <text
-        x={0}
-        y={'0.3em'}
-        textAnchor="middle"
-        style={{
-          fill: 'white',
-          fontSize: '3px'
-        }}
-      >{`${hex.q},${hex.r},${hex.s}`}</text>
+      <TileDebugLayer hex={hex} tile={tile} />
     </Hexagon>
   );
 }
