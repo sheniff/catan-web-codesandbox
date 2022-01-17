@@ -5,6 +5,7 @@ export interface Hex {
 }
 
 export enum Resource {
+  Desert = 0,
   Wood,
   Clay,
   Stone,
@@ -13,7 +14,3 @@ export enum Resource {
 }
 export type Desert = null;
 export type Generic = true;
-
-export interface GameConfig {
-  // TBD
-}

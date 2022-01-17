@@ -1,6 +1,7 @@
-import { OffsetTile, Tile, BaseTile } from './tile';
-import { GameConfig, Hex } from './types';
+import { OffsetTile, Tile, BaseTile, TileType } from './tile';
+import { Hex } from './types';
 import { HexUtils } from 'react-hexgrid';
+import { BasicGameConfig, TileGameData } from '../game/config';
 
 export type Tiles = { [id: string]: BaseTile };
 
@@ -27,15 +28,27 @@ function initEmptyTiles(hexes: Hex[], boardRadius: number): Tiles {
   return tiles;
 }
 
+function initLayout(tiles: Tiles, layout: { [tileId: string]: TileGameData }) {
+  Object.keys(tiles).forEach((tileId) => {
+    const tile = tiles[tileId];
+    const conf = layout[tileId];
+    if (conf && tile.getTileType() === TileType.TILE) {
+      (tile as Tile).setResource(conf.resource);
+      (tile as Tile).setDiceNumber(conf.diceNumber);
+    }
+  });
+}
+
 export function initTiles(
   hexes: Hex[],
   boardRadius: number,
-  config?: GameConfig
+  config?: BasicGameConfig
 ): Tiles {
   const tiles = initEmptyTiles(hexes, boardRadius);
 
   if (config) {
     // TODO: initialize game config (aka, tile types, ports, etc...)
+    initLayout(tiles, config.resourcesLayout);
   }
 
   return tiles;

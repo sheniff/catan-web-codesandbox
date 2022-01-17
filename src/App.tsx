@@ -1,9 +1,11 @@
 import { Board } from './engine/board';
 import './styles.css';
+import { BasicGameConfig } from './game/config';
 
 import { CatanBoard } from './view/CatanBoard';
 export default function App() {
-  const board = new Board(3);
+  const config = new BasicGameConfig();
+  const board = new Board(2, config);
 
   return (
     <div className="App">

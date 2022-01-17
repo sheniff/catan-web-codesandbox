@@ -1,6 +1,6 @@
 import { Corner } from './corner';
 import { Edge } from './edge';
-import { Resource, Desert } from './types';
+import { Resource } from './types';
 
 export enum TileType {
   TILE = 1,
@@ -58,7 +58,7 @@ export class OffsetTile extends BaseTile {
  * Da tile.
  */
 export class Tile extends BaseTile {
-  private resource: Resource | Desert | undefined;
+  private resource: Resource | undefined;
   private diceNumber: number | undefined;
   private hasRobber: boolean;
   // Following structure from
@@ -69,8 +69,12 @@ export class Tile extends BaseTile {
     this.hasRobber = false;
   }
 
-  setResource(r: Resource | Desert) {
+  setResource(r: Resource) {
     this.resource = r;
+  }
+
+  getResource() {
+    return this.resource;
   }
 
   setDiceNumber(n: number) {
