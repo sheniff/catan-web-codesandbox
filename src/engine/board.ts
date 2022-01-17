@@ -1,4 +1,4 @@
-import { GridGenerator } from 'react-hexgrid';
+import { GridGenerator, HexUtils } from 'react-hexgrid';
 import { initTiles, Tiles } from './boardHelpers';
 import { Player } from './player';
 import {
@@ -42,6 +42,10 @@ export class Board {
 
   getTiles() {
     return this.tiles;
+  }
+
+  getTile(hex: Hex) {
+    return this.tiles[HexUtils.getID(hex)];
   }
 
   /**
