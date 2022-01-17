@@ -1,4 +1,4 @@
-import { Hexagon, HexUtils, Text } from 'react-hexgrid';
+import { Hexagon, HexUtils } from 'react-hexgrid';
 import { Tile } from '../engine/tile';
 import { Hex, Resource } from '../engine/types';
 

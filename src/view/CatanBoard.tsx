@@ -20,8 +20,8 @@ export const CatanBoard: React.FC<Props> = ({ board }) => {
           // Ignore offset ring
           .filter(({ tile }) => tile.getTileType() === TileType.TILE)
           // Render
-          .map(({ hex, tile }) => (
-            <CatanTile hex={hex} tile={tile} />
+          .map(({ hex, tile }, i: number) => (
+            <CatanTile key={i} hex={hex} tile={tile} />
           ))}
       </Layout>
     </HexGrid>
