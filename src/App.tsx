@@ -11,7 +11,6 @@ import { Debug } from './Debug';
  * - Corner/Edge suggestion style (dashed around the edge/corner?, player color)
  * - click-to-build (road or settlement)
  * - [Debug] Toggle diceNumbers
- * - Panel responsiveness (to screen size, at least)
  */
 
 export default function App() {
