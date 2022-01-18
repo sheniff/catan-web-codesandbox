@@ -65,12 +65,12 @@ export class Debug extends React.Component<{}, DebugData> {
 
     return (
       <DebugContext.Provider value={this.state}>
+        {this.props.children}
         <StyledPanel>
           <StyledButton enabled={showCoords} onClick={toggleCoords}>
             Coords
           </StyledButton>
         </StyledPanel>
-        {this.props.children}
       </DebugContext.Provider>
     );
   }
