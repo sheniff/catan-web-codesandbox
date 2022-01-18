@@ -1,12 +1,12 @@
 import { Hex } from '../../engine/types';
 import styled from 'styled-components';
 
-export function TileCoords({ hex }: { hex: Hex }) {
-  const StyledText = styled.text`
-    fill: white;
-    font-size: 3px;
-  `;
+const StyledText = styled.text`
+  fill: white;
+  font-size: 3px;
+`;
 
+export function TileCoords({ hex }: { hex: Hex }) {
   return (
     <StyledText
       x={0}
