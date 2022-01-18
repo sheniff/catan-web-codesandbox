@@ -1,5 +1,5 @@
 import React from 'react';
-import { HexGrid, Layout } from 'react-hexgrid';
+import { Layout } from 'react-hexgrid';
 import { Board } from '../engine/board';
 import { Tile, TileType } from '../engine/tile';
 import { CatanTile } from './CatanTile';
