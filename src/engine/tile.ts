@@ -81,6 +81,10 @@ export class Tile extends BaseTile {
     this.diceNumber = n;
   }
 
+  getDiceNumber() {
+    return this.diceNumber;
+  }
+
   didMatchDice(diceNumber: number): boolean {
     return diceNumber === this.diceNumber;
   }

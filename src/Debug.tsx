@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 interface DebugData {
   showCoords: boolean;
@@ -20,8 +21,8 @@ export const DebugContext = React.createContext(debug);
  * - shift + c => toggle coords
  * - Create a debug panel
  */
-export class Debug extends React.Component<void, DebugData> {
-  constructor(props: void) {
+export class Debug extends React.Component<{}, DebugData> {
+  constructor(props: {}) {
     super(props);
 
     // What's this? Read: https://reactjs.org/docs/context.html
@@ -38,9 +39,37 @@ export class Debug extends React.Component<void, DebugData> {
   }
 
   render() {
+    const StyledPanel = styled.div`
+      position: fixed;
+      padding: 16px;
+      border: 2px dashed black;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+    `;
+
+    const StyledButton = styled.button`
+      background: ${(props: { enabled: boolean }) =>
+        props.enabled ? 'black' : 'transparent'};
+      border-radius: 3px;
+      border: 2px solid
+        ${(props: { enabled: boolean }) => (props.enabled ? 'white' : 'black')};
+      color: ${(props: { enabled: boolean }) =>
+        props.enabled ? 'white' : 'black'};
+      margin: 0 1em;
+      padding: 0.25em 1em;
+    `;
+
+    const { showCoords, toggleCoords } = this.state;
+
     return (
       <DebugContext.Provider value={this.state}>
-        {/* TODO: Create a debug panel here */}
+        <StyledPanel>
+          <StyledButton enabled={showCoords} onClick={toggleCoords}>
+            Coords
+          </StyledButton>
+        </StyledPanel>
         {this.props.children}
       </DebugContext.Provider>
     );
