@@ -1,9 +1,7 @@
 import { Hexagon, HexUtils } from 'react-hexgrid';
 import { Tile } from '../engine/tile';
-import { TileCorner } from '../engine/tileHelpers';
 import { Hex, Resource } from '../engine/types';
 import { TileDebugLayer } from './debug/TileDebugLayer';
-import { Corner } from './tile/Corner';
 import { DiceNumber } from './tile/DiceNumber';
 
 interface Props {
@@ -40,9 +38,6 @@ export function CatanTile({ hex, tile }: Props) {
     >
       <DiceNumber diceNumber={tile.getDiceNumber()} />
       <TileDebugLayer hex={hex} tile={tile} />
-      {/* Corners */}
-      <Corner position={TileCorner.N} />
-      <Corner position={TileCorner.S} />
     </Hexagon>
   );
 }

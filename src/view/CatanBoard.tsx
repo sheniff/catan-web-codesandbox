@@ -1,9 +1,12 @@
 import React from 'react';
-import { Layout } from 'react-hexgrid';
+import { Layout, HexUtils } from 'react-hexgrid';
 import { Board } from '../engine/board';
 import { Tile, TileType } from '../engine/tile';
 import { CatanTile } from './CatanTile';
 import styled from 'styled-components';
+import { Corner } from './tile/Corner';
+import { TileCorner } from '../engine/tileHelpers';
+import { Corners } from './CatanCorners';
 
 interface Props {
   board: Board;
@@ -27,6 +30,11 @@ const StyledSvg = styled.svg`
 
 export const CatanBoard: React.FC<Props> = ({ board }) => {
   const hexagons = board.getHexes();
+  const layout = {
+    size: { x: 7, y: 7 },
+    spacing: 1.02,
+    flat: false
+  };
 
   return (
     <StyledWrapper>
@@ -35,7 +43,7 @@ export const CatanBoard: React.FC<Props> = ({ board }) => {
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <Layout size={{ x: 7, y: 7 }} spacing={1.02} flat={false}>
+        <Layout size={layout.size} spacing={layout.spacing} flat={layout.flat}>
           {hexagons
             // Get tile for each hex
             .map((hex) => ({ hex, tile: board.getTile(hex) as Tile }))
@@ -44,6 +52,25 @@ export const CatanBoard: React.FC<Props> = ({ board }) => {
             // Render
             .map(({ hex, tile }, i: number) => (
               <CatanTile key={i} hex={hex} tile={tile} />
+            ))}
+
+          <Corners hexagons={hexagons} board={board} />
+          {/* TODO: move this into Corners */}
+          {hexagons
+            .map((hex) => {
+              const hexCoords = HexUtils.hexToPixel(hex, layout);
+              const tile = board.getTile(hex);
+              return { hex, hexCoords, tile };
+            })
+            .map(({ hexCoords, tile }, i: number) => (
+              // North
+              <Corner
+                corner={tile.getCorners()[TileCorner.N]}
+                coords={{
+                  x: hexCoords.x,
+                  y: hexCoords.y - layout.size.y
+                }}
+              />
             ))}
         </Layout>
       </StyledSvg>

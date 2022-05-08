@@ -1,11 +1,10 @@
-import { Occupation } from '../../engine/corner';
+import { Corner as CornerData } from '../../engine/corner';
 import styled from 'styled-components';
-import { TileCorner } from '../../engine/tileHelpers';
 
 interface Props {
   onClick?: () => void;
-  occupation?: Occupation;
-  position: TileCorner;
+  corner: CornerData;
+  coords: { x: number; y: number };
 }
 
 const StyledCircle = styled.circle`
@@ -14,6 +13,6 @@ const StyledCircle = styled.circle`
   stroke-width: 0.2;
 `;
 
-export function Corner({ occupation, position }: Props) {
-  return <StyledCircle r="2" cx="0" cy={position === TileCorner.N ? -7 : 7} />;
+export function Corner({ corner, coords }: Props) {
+  return <StyledCircle r="2" cx={coords.x} cy={coords.y} />;
 }
