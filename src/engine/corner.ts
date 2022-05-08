@@ -6,7 +6,7 @@ enum Reward {
   City = 2
 }
 
-interface Occupation {
+export interface Occupation {
   owner: Player;
   reward: Reward;
 }
