@@ -1,12 +1,11 @@
 import React from 'react';
-import { Layout, HexUtils } from 'react-hexgrid';
+import { Layout } from 'react-hexgrid';
 import { Board } from '../engine/board';
-import { Tile, TileType } from '../engine/tile';
-import { CatanTile } from './CatanTile';
 import styled from 'styled-components';
-import { Corner } from './tile/Corner';
-import { TileCorner } from '../engine/tileHelpers';
-import { Corners } from './CatanCorners';
+import { Corners } from './corner/CatanCorners';
+import { Tiles } from './tile/CatanTiles';
+import { Corner as CornerData } from '../engine/corner';
+import { BaseTile } from '../engine/tile';
 
 interface Props {
   board: Board;
@@ -35,6 +34,9 @@ export const CatanBoard: React.FC<Props> = ({ board }) => {
     spacing: 1.02,
     flat: false
   };
+  const handleCornerClick = (corner: CornerData, tile: BaseTile) => {
+    console.log('clicked corner!', corner, tile);
+  };
 
   return (
     <StyledWrapper>
@@ -44,34 +46,12 @@ export const CatanBoard: React.FC<Props> = ({ board }) => {
         xmlns="http://www.w3.org/2000/svg"
       >
         <Layout size={layout.size} spacing={layout.spacing} flat={layout.flat}>
-          {hexagons
-            // Get tile for each hex
-            .map((hex) => ({ hex, tile: board.getTile(hex) as Tile }))
-            // Ignore offset ring
-            .filter(({ tile }) => tile.getTileType() === TileType.TILE)
-            // Render
-            .map(({ hex, tile }, i: number) => (
-              <CatanTile key={i} hex={hex} tile={tile} />
-            ))}
-
-          <Corners hexagons={hexagons} board={board} />
-          {/* TODO: move this into Corners */}
-          {hexagons
-            .map((hex) => {
-              const hexCoords = HexUtils.hexToPixel(hex, layout);
-              const tile = board.getTile(hex);
-              return { hex, hexCoords, tile };
-            })
-            .map(({ hexCoords, tile }, i: number) => (
-              // North
-              <Corner
-                corner={tile.getCorners()[TileCorner.N]}
-                coords={{
-                  x: hexCoords.x,
-                  y: hexCoords.y - layout.size.y
-                }}
-              />
-            ))}
+          <Tiles hexagons={hexagons} board={board} />
+          <Corners
+            hexagons={hexagons}
+            board={board}
+            onClick={handleCornerClick}
+          />
         </Layout>
       </StyledSvg>
     </StyledWrapper>

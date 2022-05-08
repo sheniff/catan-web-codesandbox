@@ -1,8 +1,8 @@
 import { Hexagon, HexUtils } from 'react-hexgrid';
-import { Tile } from '../engine/tile';
-import { Hex, Resource } from '../engine/types';
-import { TileDebugLayer } from './debug/TileDebugLayer';
-import { DiceNumber } from './tile/DiceNumber';
+import { Tile } from '../../engine/tile';
+import { Hex, Resource } from '../../engine/types';
+import { TileDebugLayer } from '../debug/TileDebugLayer';
+import { DiceNumber } from './DiceNumber';
 
 interface Props {
   hex: Hex;
