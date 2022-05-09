@@ -52,12 +52,12 @@ export const CatanBoard: React.FC<Props> = ({ board }) => {
       >
         <Layout size={layout.size} spacing={layout.spacing} flat={layout.flat}>
           <Tiles hexagons={hexagons} board={board} />
+          <Edges hexagons={hexagons} board={board} onClick={handleEdgeClick} />
           <Corners
             hexagons={hexagons}
             board={board}
             onClick={handleCornerClick}
           />
-          <Edges hexagons={hexagons} board={board} onClick={handleEdgeClick} />
         </Layout>
       </StyledSvg>
     </StyledWrapper>

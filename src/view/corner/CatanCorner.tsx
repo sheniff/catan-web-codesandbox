@@ -13,7 +13,7 @@ const StyledCircle = styled.circle`
   fill: red;
   stroke: black;
   stroke-width: 0.2;
-  opacity: 0.7;
+  /* opacity: 0.7; */
 `;
 
 export function Corner({ corner, tile, coords, onClick }: Props) {

@@ -2,18 +2,19 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Board } from '../../engine/board';
 import { Hex } from '../../engine/types';
-import { TileCorner, TileEdge } from '../../engine/tileHelpers';
+import { TileEdge } from '../../engine/tileHelpers';
 import { HexUtils } from 'react-hexgrid';
 import { BaseTile, TileType } from '../../engine/tile';
 import { Edge as EdgeData } from '../../engine/edge';
 import { Edge } from './CatanEdge';
 
-function shouldRenderEdge(tile: BaseTile, hex: Hex, edge: TileEdge): boolean {
-  return true;
+function shouldRenderEdge(board: Board, hex: Hex, edge: TileEdge): boolean {
+  const tile = board.getTile(hex);
   return (
     tile.getTileType() === TileType.TILE ||
-    (hex.r > 0 && corner === TileCorner.N) ||
-    (hex.r < 0 && corner === TileCorner.S)
+    (hex.q < 0 && hex.s <= board.size && edge === TileEdge.NE) ||
+    (hex.s < 0 && hex.q <= board.size && edge === TileEdge.NW) ||
+    (hex.s >= 0 && hex.r >= board.size * -1 && edge === TileEdge.W)
   );
 }
 
@@ -38,9 +39,9 @@ export class Edges extends Component<Props> {
         .map((hex) => ({
           hexCoords: HexUtils.hexToPixel(hex, layout),
           tile: board.getTile(hex),
-          renderNE: shouldRenderEdge(board.getTile(hex), hex, TileEdge.NE),
-          renderNW: shouldRenderEdge(board.getTile(hex), hex, TileEdge.NW),
-          renderW: shouldRenderEdge(board.getTile(hex), hex, TileEdge.W)
+          renderNE: shouldRenderEdge(board, hex, TileEdge.NE),
+          renderNW: shouldRenderEdge(board, hex, TileEdge.NW),
+          renderW: shouldRenderEdge(board, hex, TileEdge.W)
         }))
         // Render
         .map(({ hexCoords, tile, renderNE, renderNW, renderW }, i: number) => (
@@ -55,6 +56,35 @@ export class Edges extends Component<Props> {
                   y: hexCoords.y - layout.size.y / 2
                 }}
                 height={layout.size.y}
+                position={TileEdge.W}
+                onClick={onClick}
+              />
+            )}
+            {renderNW && (
+              <Edge
+                key={`edge-${i}-NW`}
+                edge={tile.getEdges()[TileEdge.NW]}
+                tile={tile}
+                coords={{
+                  x: hexCoords.x,
+                  y: hexCoords.y - layout.size.y - 0.5
+                }}
+                height={layout.size.y}
+                position={TileEdge.NW}
+                onClick={onClick}
+              />
+            )}
+            {renderNE && (
+              <Edge
+                key={`edge-${i}-NE`}
+                edge={tile.getEdges()[TileEdge.NE]}
+                tile={tile}
+                coords={{
+                  x: hexCoords.x,
+                  y: hexCoords.y - layout.size.y + 0.5
+                }}
+                height={layout.size.y}
+                position={TileEdge.NE}
                 onClick={onClick}
               />
             )}

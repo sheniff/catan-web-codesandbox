@@ -31,7 +31,7 @@ export class Board {
   private tiles: Tiles;
   // Check https://www.redblobgames.com/grids/parts/#hexagon-relationships
 
-  constructor(size: number, config?: GameConfig) {
+  constructor(public size: number, config?: GameConfig) {
     this.hexagons = GridGenerator.hexagon(size + 1); // +1 for the overflow ring
     this.tiles = initTiles(this.hexagons, size, config);
   }
