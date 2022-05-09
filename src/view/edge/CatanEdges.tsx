@@ -14,7 +14,7 @@ function shouldRenderEdge(board: Board, hex: Hex, edge: TileEdge): boolean {
     tile.getTileType() === TileType.TILE ||
     (hex.q < 0 && hex.s <= board.size && edge === TileEdge.NE) ||
     (hex.s < 0 && hex.q <= board.size && edge === TileEdge.NW) ||
-    (hex.s >= 0 && hex.r >= board.size * -1 && edge === TileEdge.W)
+    (hex.s > 0 && hex.r >= board.size * -1 && edge === TileEdge.W)
   );
 }
 

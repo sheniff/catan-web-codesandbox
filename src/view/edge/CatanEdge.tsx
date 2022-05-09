@@ -13,17 +13,24 @@ interface Props {
 }
 
 const StyledRect = styled.rect`
-  fill: red;
+  fill: gray;
   stroke: black;
   stroke-width: 0.2;
-  opacity: 0.7;
   transform-box: fill-box;
+  cursor: pointer;
+  transition: opacity 200ms ease-in-out;
 
-  ${({ position }: { position: TileEdge }) =>
+  &:hover {
+    opacity: 0.7;
+  }
+
+  ${({ position, edge }: { position: TileEdge; edge: EdgeData }) =>
     css`
       transform: rotate(
         ${position === TileEdge.NE ? 300 : position === TileEdge.NW ? 60 : 0}deg
       );
+      fill: ${edge.getOwner()?.getColor() || 'gray'};
+      opacity: ${!!edge.getOwner() ? 0.7 : 0};
     `}
 `;
 
@@ -36,6 +43,7 @@ export function Edge({ edge, tile, coords, height, onClick, position }: Props) {
       y={coords.y}
       onClick={() => onClick?.(edge, tile)}
       position={position}
+      edge={edge}
     />
   );
 }

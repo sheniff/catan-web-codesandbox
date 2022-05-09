@@ -1,5 +1,5 @@
 import { Corner as CornerData } from '../../engine/corner';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { BaseTile } from '../../engine/tile';
 
 interface Props {
@@ -10,10 +10,21 @@ interface Props {
 }
 
 const StyledCircle = styled.circle`
-  fill: red;
+  fill: gray;
   stroke: black;
   stroke-width: 0.2;
-  /* opacity: 0.7; */
+  cursor: pointer;
+  transition: opacity 200ms ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  ${({ corner }: { corner: CornerData }) =>
+    css`
+      fill: ${corner.getOwner()?.getColor() || 'gray'};
+      opacity: ${!!corner.getOwner() ? 1 : 0};
+    `}
 `;
 
 export function Corner({ corner, tile, coords, onClick }: Props) {
@@ -23,6 +34,7 @@ export function Corner({ corner, tile, coords, onClick }: Props) {
       cx={coords.x}
       cy={coords.y}
       onClick={() => onClick?.(corner, tile)}
+      corner={corner}
     />
   );
 }
