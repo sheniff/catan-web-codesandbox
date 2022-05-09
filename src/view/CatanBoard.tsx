@@ -5,7 +5,9 @@ import styled from 'styled-components';
 import { Corners } from './corner/CatanCorners';
 import { Tiles } from './tile/CatanTiles';
 import { Corner as CornerData } from '../engine/corner';
+import { Edge as EdgeData } from '../engine/edge';
 import { BaseTile } from '../engine/tile';
+import { Edges } from './edge/CatanEdges';
 
 interface Props {
   board: Board;
@@ -37,6 +39,9 @@ export const CatanBoard: React.FC<Props> = ({ board }) => {
   const handleCornerClick = (corner: CornerData, tile: BaseTile) => {
     console.log('clicked corner!', corner, tile);
   };
+  const handleEdgeClick = (edge: EdgeData, tile: BaseTile) => {
+    console.log('clicked edge!', edge, tile);
+  };
 
   return (
     <StyledWrapper>
@@ -52,6 +57,7 @@ export const CatanBoard: React.FC<Props> = ({ board }) => {
             board={board}
             onClick={handleCornerClick}
           />
+          <Edges hexagons={hexagons} board={board} onClick={handleEdgeClick} />
         </Layout>
       </StyledSvg>
     </StyledWrapper>

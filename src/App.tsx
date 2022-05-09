@@ -6,7 +6,6 @@ import { Debug } from './Debug';
 
 /**
  * What's next?
- * - Corner Component for tiles
  * - Edge Component for tiles
  * - Corner/Edge suggestion style (dashed around the edge/corner?, player color)
  * - click-to-build (road or settlement)
