@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { CoordsToggleButton } from './view/debug/CoordsToggleButton';
 
 interface DebugData {
   showCoords: boolean;
@@ -49,27 +50,13 @@ export class Debug extends React.Component<{}, DebugData> {
       display: flex;
     `;
 
-    const StyledButton = styled.button`
-      background: ${(props: { enabled: boolean }) =>
-        props.enabled ? 'black' : 'transparent'};
-      border-radius: 3px;
-      border: 2px solid
-        ${(props: { enabled: boolean }) => (props.enabled ? 'white' : 'black')};
-      color: ${(props: { enabled: boolean }) =>
-        props.enabled ? 'white' : 'black'};
-      margin: 0 1em;
-      padding: 0.25em 1em;
-    `;
-
     const { showCoords, toggleCoords } = this.state;
 
     return (
       <DebugContext.Provider value={this.state}>
         {this.props.children}
         <StyledPanel>
-          <StyledButton enabled={showCoords} onClick={toggleCoords}>
-            Coords
-          </StyledButton>
+          <CoordsToggleButton enabled={showCoords} onClick={toggleCoords} />
         </StyledPanel>
       </DebugContext.Provider>
     );

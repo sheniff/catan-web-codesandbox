@@ -1,4 +1,5 @@
 import { Resource } from '../engine/types';
+import { Player } from '../engine/player';
 
 export interface TileGameData {
   resource: Resource;
@@ -16,12 +17,12 @@ function randomizeLayoutResources(
 }
 
 export class BasicGameConfig {
-  public readonly maxPlayers: number;
+  public readonly maxPlayers: number; // not very useful. Might want to remove.
   public readonly numResources: { [resource: number]: number };
   public readonly boardRadius: number;
   public readonly resourcesLayout: { [tileId: string]: TileGameData };
 
-  constructor(randomizeResources = false) {
+  constructor(public readonly players: Player[], randomizeResources = false) {
     this.maxPlayers = 4;
     this.boardRadius = 2;
     this.numResources = {
