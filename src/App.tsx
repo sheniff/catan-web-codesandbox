@@ -3,6 +3,7 @@ import './styles.css';
 import { BasicGameConfig } from './game/config';
 import { CatanBoard } from './view/CatanBoard';
 import { Debug } from './Debug';
+import { Game } from './game/Game';
 
 /**
  * What's next?
@@ -13,14 +14,18 @@ import { Debug } from './Debug';
  */
 
 export default function App() {
-  const config = new BasicGameConfig();
+  const config = new BasicGameConfig([
+    // TODO: Create players to test this
+  ]);
   const board = new Board(2, config);
 
   return (
     <div className="App">
       <h1>Catan</h1>
       <Debug>
-        <CatanBoard board={board} />
+        <Game config={config}>
+          <CatanBoard board={board} />
+        </Game>
       </Debug>
     </div>
   );
