@@ -1,5 +1,4 @@
 import { Resource } from '../engine/types';
-import { Player } from '../engine/player';
 
 export interface TileGameData {
   resource: Resource;
@@ -22,7 +21,7 @@ export class BasicGameConfig {
   public readonly boardRadius: number;
   public readonly resourcesLayout: { [tileId: string]: TileGameData };
 
-  constructor(public readonly players: Player[], randomizeResources = false) {
+  constructor(randomizeResources = false) {
     this.maxPlayers = 4;
     this.boardRadius = 2;
     this.numResources = {

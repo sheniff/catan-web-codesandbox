@@ -1,9 +1,9 @@
 import { Board } from './engine/board';
 import './styles.css';
-import { BasicGameConfig } from './game/config';
 import { CatanBoard } from './view/CatanBoard';
 import { Debug } from './Debug';
 import { Game } from './game/Game';
+import { GameDirector } from './game/GameDirector';
 
 /**
  * What's next?
@@ -14,16 +14,14 @@ import { Game } from './game/Game';
  */
 
 export default function App() {
-  const config = new BasicGameConfig([
-    // TODO: Create players to test this
-  ]);
-  const board = new Board(2, config);
+  const gameDirector = new GameDirector();
+  const board = new Board(2, gameDirector.getConfig());
 
   return (
     <div className="App">
       <h1>Catan</h1>
       <Debug>
-        <Game config={config}>
+        <Game director={gameDirector}>
           <CatanBoard board={board} />
         </Game>
       </Debug>
